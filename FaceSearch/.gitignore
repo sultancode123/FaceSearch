@@ -1,0 +1,22 @@
+## .gitignore file
+
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# App settings with passwords - DON'T upload
+appsettings.json
+
+# App_Data - local only
+App_Data/
+
+# Visual Studio
+.vs/
+*.userprefs
+
+# Packages
+packages/
