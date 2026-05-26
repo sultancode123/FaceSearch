@@ -4,10 +4,9 @@ EXPOSE 10000
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["FaceSearch/IFNRCONFaceSearch.csproj", "FaceSearch/"]
-RUN dotnet restore "FaceSearch/IFNRCONFaceSearch.csproj"
 COPY . .
 WORKDIR "/src/FaceSearch"
+RUN dotnet restore "IFNRCONFaceSearch.csproj"
 RUN dotnet build "IFNRCONFaceSearch.csproj" -c Release -o /app/build
 
 FROM build AS publish
