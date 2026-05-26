@@ -1,0 +1,150 @@
+﻿@model IFNRCONFaceSearch.Models.LoginViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFNRCON 2026 – Find My Photos</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#06091a;--accent:#4f8ef7;--green:#38e5b0;--purple:#a855f7;--text:#e8edf5;--muted:#8893a8}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{cursor:none;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+        #mascot{pointer-events:none;position:fixed;z-index:9999;width:44px;height:44px;transform:translate(-50%,-50%);filter:drop-shadow(0 0 10px rgba(79,142,247,.9));animation:bob 1.4s ease-in-out infinite}
+        @@keyframes bob{0%,100%{margin-top:0}50%{margin-top:-8px}}
+        #particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+        #grid-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.25}
+        .glow{position:fixed;z-index:0;pointer-events:none;border-radius:50%;filter:blur(100px)}
+        .g1{width:700px;height:500px;top:-150px;left:-150px;background:rgba(79,142,247,.12);animation:gd1 10s ease-in-out infinite alternate}
+        .g2{width:600px;height:450px;bottom:-100px;right:-100px;background:rgba(168,85,247,.08);animation:gd2 13s ease-in-out infinite alternate}
+        @@keyframes gd1{from{transform:translate(0,0)}to{transform:translate(80px,60px)}}
+        @@keyframes gd2{from{transform:translate(0,0)}to{transform:translate(-60px,-40px)}}
+        .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+        .o1{width:8px;height:8px;background:var(--accent);top:20%;left:10%;box-shadow:0 0 20px var(--accent);animation:f1 6s ease-in-out infinite}
+        .o2{width:6px;height:6px;background:var(--green);top:70%;left:85%;box-shadow:0 0 15px var(--green);animation:f2 8s ease-in-out infinite}
+        .o3{width:10px;height:10px;background:var(--purple);top:50%;left:5%;box-shadow:0 0 20px var(--purple);animation:f3 7s ease-in-out infinite}
+        @@keyframes f1{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
+        @@keyframes f2{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+        @@keyframes f3{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-40px) scale(1.5)}}
+        .scan{position:fixed;left:0;right:0;height:2px;z-index:1;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(79,142,247,.6),rgba(56,229,176,.4),transparent);animation:scan 8s linear infinite}
+        @@keyframes scan{0%{top:-2px;opacity:0}5%{opacity:1}95%{opacity:1}100%{top:100%;opacity:0}}
+        .page{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 16px;min-height:100vh}
+        .wrap{background:rgba(8,14,35,.9);border:1px solid rgba(79,142,247,.2);border-radius:28px;max-width:440px;width:100%;padding:40px 34px;box-shadow:0 40px 100px rgba(0,0,0,.7);backdrop-filter:blur(24px);position:relative;overflow:hidden}
+        .wrap::before{content:'';position:absolute;top:0;left:-100%;width:200%;height:1px;background:linear-gradient(90deg,transparent,rgba(79,142,247,.6),rgba(56,229,176,.4),transparent);animation:sh 4s ease-in-out infinite}
+        @@keyframes sh{0%{left:-100%}100%{left:100%}}
+        .hdr{text-align:center;margin-bottom:26px}
+        .logo-wrap{position:relative;width:80px;height:80px;margin:0 auto 18px}
+        .logo{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#4f8ef7,#38e5b0);display:flex;align-items:center;justify-content:center;font-size:34px;animation:lp 3s ease-in-out infinite}
+        @@keyframes lp{0%,100%{box-shadow:0 0 30px rgba(79,142,247,.3)}50%{box-shadow:0 0 60px rgba(79,142,247,.6)}}
+        .ring{position:absolute;inset:-6px;border-radius:50%;border:2px solid transparent;background:linear-gradient(135deg,var(--accent),var(--green),var(--purple)) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;animation:spin 4s linear infinite}
+        @@keyframes spin{to{transform:rotate(360deg)}}
+        .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,.15);color:var(--accent);font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;border:1px solid rgba(79,142,247,.3);letter-spacing:.8px;margin-bottom:12px}
+        .badge::before{content:'●';color:var(--green);animation:pd 2s ease-in-out infinite}
+        @@keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
+        h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;margin-bottom:6px;min-height:38px}
+        .cur{display:inline-block;width:3px;height:1em;background:var(--accent);margin-left:2px;animation:blink .7s step-end infinite;vertical-align:middle}
+        @@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        .sub{font-size:13px;color:var(--muted)}
+        hr{border:none;height:1px;margin:0 0 22px;background:linear-gradient(90deg,transparent,rgba(79,142,247,.3),transparent)}
+        .stats{display:flex;margin-bottom:22px;border-radius:12px;overflow:hidden;border:1px solid rgba(79,142,247,.12)}
+        .stat{flex:1;padding:10px 8px;text-align:center;background:rgba(10,18,45,.5);border-right:1px solid rgba(79,142,247,.1)}
+        .stat:last-child{border-right:none}
+        .sn{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--accent)}
+        .sl{font-size:10px;color:var(--muted);margin-top:1px}
+        .alert{border-radius:12px;padding:12px 14px;font-size:13px;margin-bottom:16px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:#fca5a5}
+        .fg{margin-bottom:16px}
+        .lbl{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.6px;text-transform:uppercase}
+        .iw{position:relative}
+        .ii{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+        input[type=text],input[type=email]{width:100%;padding:13px 16px 13px 42px;border:1.5px solid rgba(79,142,247,.2);border-radius:12px;font-size:14px;color:var(--text);background:rgba(10,18,45,.8);font-family:'DM Sans',sans-serif;transition:all .3s}
+        input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,142,247,.15)}
+        input::placeholder{color:rgba(136,147,168,.5)}
+        .btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:none;font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#1d4ed8,#4f8ef7,#0ea5e9);color:#fff;transition:all .3s;box-shadow:0 4px 24px rgba(79,142,247,.4);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;animation:bg 3s ease-in-out infinite}
+        @@keyframes bg{0%,100%{box-shadow:0 4px 24px rgba(79,142,247,.4)}50%{box-shadow:0 4px 40px rgba(79,142,247,.7)}}
+        .btn:hover{transform:translateY(-2px)}
+        .tip{margin-top:20px;padding:12px 14px;border-radius:12px;background:rgba(79,142,247,.05);border:1px solid rgba(79,142,247,.12)}
+        .tip p{font-size:12px;color:#6b88c0;line-height:1.7}
+        .tip strong{color:var(--accent)}
+    </style>
+</head>
+<body>
+    <div id="mascot">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <defs><filter id="gf"><feGaussianBlur stdDeviation="2" result="b" /><feComposite in="SourceGraphic" in2="b" operator="over" /></filter></defs>
+            <g filter="url(#gf)">
+                <rect x="18" y="4" width="7" height="20" rx="3.5" fill="white" />
+                <rect x="25.5" y="10" width="6" height="16" rx="3" fill="white" />
+                <rect x="12" y="12" width="6" height="14" rx="3" fill="white" />
+                <rect x="31" y="15" width="5" height="11" rx="2.5" fill="white" />
+                <ellipse cx="9" cy="24" rx="4.5" ry="3.5" fill="white" transform="rotate(-15 9 24)" />
+                <rect x="10" y="21" width="24" height="14" rx="5" fill="white" />
+            </g>
+        </svg>
+    </div>
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="orb o3"></div>
+    <div class="scan"></div>
+    <canvas id="grid-canvas"></canvas>
+    <canvas id="particles"></canvas>
+
+    <div class="page">
+        <div class="wrap">
+            <div class="hdr">
+                <div class="logo-wrap">
+                    <div class="logo">🔍</div>
+                    <div class="ring"></div>
+                </div>
+                <div class="badge">IFNRCON 2026</div>
+                <h1><span id="tw"></span><span class="cur"></span></h1>
+                <p class="sub">AI-powered face recognition across all event photos</p>
+            </div>
+            <hr>
+            <div class="stats">
+                <div class="stat"><div class="sn">4</div><div class="sl">Event Days</div></div>
+                <div class="stat"><div class="sn">4K+</div><div class="sl">Photos</div></div>
+                <div class="stat"><div class="sn">AI</div><div class="sl">Powered</div></div>
+                <div class="stat"><div class="sn">Fast</div><div class="sl">Search</div></div>
+            </div>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert">⚠️ @TempData["Error"]</div>
+            }
+
+            <form method="post" asp-action="DoLogin" asp-controller="FaceSearch">
+                @Html.AntiForgeryToken()
+                <div class="fg">
+                    <label class="lbl">Registration ID</label>
+                    <div class="iw">
+                        <span class="ii">🎫</span>
+                        <input type="text" asp-for="RegistrationId" placeholder="e.g. 815 or IFNRCON 815" autocomplete="off" autofocus>
+                    </div>
+                </div>
+                <div class="fg">
+                    <label class="lbl">Registered Email</label>
+                    <div class="iw">
+                        <span class="ii">📧</span>
+                        <input type="email" asp-for="Email" placeholder="your@email.com" autocomplete="off">
+                    </div>
+                </div>
+                <button type="submit" class="btn">🔍 &nbsp;Find My Photos</button>
+            </form>
+
+            <div class="tip">
+                <p>💡 Enter your <strong>IFNRCON 2026 Registration Number</strong> and the <strong>email address</strong> used during registration.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function(){var m=document.getElementById('mascot'),cx=window.innerWidth/2,cy=window.innerHeight/2,tx=cx,ty=cy,vx=0,vy=0;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY;});function a(){var dx=tx-cx,dy=ty-cy;vx+=dx*.18;vy+=dy*.18;vx*=.72;vy*=.72;cx+=vx;cy+=vy;m.style.left=cx+'px';m.style.top=cy+'px';m.style.transform='translate(-50%,-50%) rotate('+Math.max(-20,Math.min(20,vx*1.5))+'deg)';requestAnimationFrame(a);}a();})();
+        (function(){var c=document.getElementById('grid-canvas'),ctx=c.getContext('2d'),W,H,o=0;function r(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}r();window.addEventListener('resize',r);function d(){ctx.clearRect(0,0,W,H);var s=60;o=(o+.3)%s;ctx.strokeStyle='rgba(79,142,247,.15)';ctx.lineWidth=.5;for(var x=o%s-s;x<W+s;x+=s){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(var y=o%s-s;y<H+s;y+=s){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}requestAnimationFrame(d);}d();})();
+        (function(){var words=['Find My Photos','IFNRCON 2026','AI Face Search'],el=document.getElementById('tw'),wi=0,ci=0,dl=false;function t(){var w=words[wi];if(!dl){el.textContent=w.slice(0,ci+1);ci++;if(ci===w.length){dl=true;setTimeout(t,2000);return;}setTimeout(t,60+Math.random()*40);}else{el.textContent=w.slice(0,ci-1);ci--;if(ci===0){dl=false;wi=(wi+1)%words.length;setTimeout(t,500);return;}setTimeout(t,30);}}setTimeout(t,800);})();
+    </script>
+</body>
+</html>
