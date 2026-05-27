@@ -226,13 +226,13 @@ namespace IFNRCONFaceSearch.Controllers
                 await Task.Delay(2000); // simulate search
                 var demoResults = new[]
                 {
-            new { url = "https://picsum.photos/seed/face1/400/300",
+            new { url = "https://drive.google.com/file/d/1saLYwCjWgjvtibcyUVb4LihLiFp_sSXD/view?usp=sharing",
                   filename = "event-photo-1.jpg", confidence = 95.5m, s3_key = "demo/1" },
-            new { url = "https://picsum.photos/seed/face2/400/300",
+            new { url = "https://drive.google.com/file/d/1mhT5ds8rRbKQDjFRLhKNkZQgESVrLCcg/view?usp=sharing",
                   filename = "event-photo-2.jpg", confidence = 89.2m, s3_key = "demo/2" },
-            new { url = "https://picsum.photos/seed/face3/400/300",
+            new { url = "https://drive.google.com/file/d/1vtGul7g8HP8ZLOhMS-IxyiHEVv-X6IXR/view?usp=sharing",
                   filename = "event-photo-3.jpg", confidence = 82.7m, s3_key = "demo/3" },
-            new { url = "https://picsum.photos/seed/face4/400/300",
+            new { url = "https://drive.google.com/file/d/1_OjqdaYZt7_5uahSyAy-Q99yAjyExj0_/view?usp=sharing",
                   filename = "event-photo-4.jpg", confidence = 76.1m, s3_key = "demo/4" }
         };
                 return Json(new
