@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find My Photos – IFNRCON 2026</title>
+    <title>Find My Photos – EventFace AI</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1117,7 +1117,7 @@
             </div>
             <div class="hdr">
                 <div class="logo-wrap"><div class="logo">🔍</div><div class="ring"></div></div>
-                <div class="badge">IFNRCON 2026</div>
+                <div class="badge">EventFace AI</div>
                 <h1><span id="tw"></span><span class="cur"></span></h1>
                 <p class="sub">AI-powered face search across all event photos</p>
             </div>
@@ -1251,7 +1251,7 @@
 
         (function(){var m=document.getElementById('mascot'),cx=window.innerWidth/2,cy=window.innerHeight/2,tx=cx,ty=cy,vx=0,vy=0;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY;});function a(){var dx=tx-cx,dy=ty-cy;vx+=dx*.18;vy+=dy*.18;vx*=.72;vy*=.72;cx+=vx;cy+=vy;m.style.left=cx+'px';m.style.top=cy+'px';m.style.transform='translate(-50%,-50%) rotate('+Math.max(-20,Math.min(20,vx*1.5))+'deg)';requestAnimationFrame(a);}a();})();
         (function(){var c=document.getElementById('grid-canvas'),ctx=c.getContext('2d'),W,H,o=0;function r(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}r();window.addEventListener('resize',r);function d(){ctx.clearRect(0,0,W,H);var s=60;o=(o+.3)%s;ctx.strokeStyle='rgba(79,142,247,.15)';ctx.lineWidth=.5;for(var x=o%s-s;x<W+s;x+=s){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(var y=o%s-s;y<H+s;y+=s){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}requestAnimationFrame(d);}d();})();
-        (function(){var words=['Find My Photos','IFNRCON 2026','AI Face Search'],el=document.getElementById('tw'),wi=0,ci=0,dl=false;function t(){var w=words[wi];if(!dl){el.textContent=w.slice(0,ci+1);ci++;if(ci===w.length){dl=true;setTimeout(t,2000);return;}setTimeout(t,60+Math.random()*40);}else{el.textContent=w.slice(0,ci-1);ci--;if(ci===0){dl=false;wi=(wi+1)%words.length;setTimeout(t,500);return;}setTimeout(t,30);}}setTimeout(t,800);})();
+        (function(){var words=['Find My Photos','EventFace AI','AI Face Search'],el=document.getElementById('tw'),wi=0,ci=0,dl=false;function t(){var w=words[wi];if(!dl){el.textContent=w.slice(0,ci+1);ci++;if(ci===w.length){dl=true;setTimeout(t,2000);return;}setTimeout(t,60+Math.random()*40);}else{el.textContent=w.slice(0,ci-1);ci--;if(ci===0){dl=false;wi=(wi+1)%words.length;setTimeout(t,500);return;}setTimeout(t,30);}}setTimeout(t,800);})();
 
         document.getElementById('finput').addEventListener('change',function(){if(this.files[0])loadFile(this.files[0]);});
         document.getElementById('pchg').addEventListener('click',function(e){e.stopPropagation();document.getElementById('finput').click();});

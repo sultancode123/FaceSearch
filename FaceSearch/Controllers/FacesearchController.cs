@@ -105,53 +105,71 @@ namespace IFNRCONFaceSearch.Controllers
 
             var regId = model.RegistrationId.Trim();
             var email = model.Email.Trim().ToLower();
-            var connStr = GetConnectionString();
+
+            // ── Demo login for portfolio/resume ──────────────────────────────
+            if ((regId == "DEMO123" || regId == "demo123") &&
+                 email == "demo@facesearch.com")
+            {
+                HttpContext.Session.SetString("face_search_auth", "true");
+                HttpContext.Session.SetString("face_search_name", "Demo User");
+                return RedirectToAction("Index");
+            }
+
+            // ── Real database login ──────────────────────────────────────────
             bool found = false;
             string name = "";
 
-            using var conn = new MySql.Data.MySqlClient.MySqlConnection(connStr);
-            conn.Open();
-
-            // Check tbl_con_member_2026
-            if (!found)
+            try
             {
-                var sql = @"SELECT fname, lname FROM tbl_con_member_2026
-                            WHERE is_active=1 AND is_deleted=0
-                            AND (registration_id=@rid OR its_regid=@rid)
-                            AND (LOWER(email)=@em OR LOWER(alt_email)=@em) LIMIT 1";
-                using var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@rid", regId);
-                cmd.Parameters.AddWithValue("@em", email);
-                using var rd = cmd.ExecuteReader();
-                if (rd.Read()) { found = true; name = $"{rd["fname"]} {rd["lname"]}".Trim(); }
+                var connStr = GetConnectionString();
+                using var conn = new MySql.Data.MySqlClient.MySqlConnection(connStr);
+                conn.Open();
+
+                // Check tbl_con_member_2026
+                if (!found)
+                {
+                    var sql = @"SELECT fname, lname FROM tbl_con_member_2026
+                        WHERE is_active=1 AND is_deleted=0
+                        AND (registration_id=@rid OR its_regid=@rid)
+                        AND (LOWER(email)=@em OR LOWER(alt_email)=@em) LIMIT 1";
+                    using var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@rid", regId);
+                    cmd.Parameters.AddWithValue("@em", email);
+                    using var rd = cmd.ExecuteReader();
+                    if (rd.Read()) { found = true; name = $"{rd["fname"]} {rd["lname"]}".Trim(); }
+                }
+
+                // Check tbl_members
+                if (!found)
+                {
+                    var sql = @"SELECT fname, lname FROM tbl_members
+                        WHERE is_active=1
+                        AND (registration_id=@rid OR its_regid=@rid)
+                        AND (LOWER(email)=@em OR LOWER(alt_email)=@em) LIMIT 1";
+                    using var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@rid", regId);
+                    cmd.Parameters.AddWithValue("@em", email);
+                    using var rd = cmd.ExecuteReader();
+                    if (rd.Read()) { found = true; name = $"{rd["fname"]} {rd["lname"]}".Trim(); }
+                }
+
+                // Check tbl_icmr_registration_2026
+                if (!found)
+                {
+                    var sql = @"SELECT fname, lname FROM tbl_icmr_registration_2026
+                        WHERE is_active=1 AND is_deleted=0
+                        AND (icmr_reg_id=@rid OR its_regid=@rid OR icmr_id=@rid)
+                        AND (LOWER(email)=@em OR LOWER(alt_email)=@em) LIMIT 1";
+                    using var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@rid", regId);
+                    cmd.Parameters.AddWithValue("@em", email);
+                    using var rd = cmd.ExecuteReader();
+                    if (rd.Read()) { found = true; name = $"{rd["fname"]} {rd["lname"]}".Trim(); }
+                }
             }
-
-            // Check tbl_members
-            if (!found)
+            catch (Exception)
             {
-                var sql = @"SELECT fname, lname FROM tbl_members
-                            WHERE is_active=1
-                            AND (registration_id=@rid OR its_regid=@rid)
-                            AND (LOWER(email)=@em OR LOWER(alt_email)=@em) LIMIT 1";
-                using var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@rid", regId);
-                cmd.Parameters.AddWithValue("@em", email);
-                using var rd = cmd.ExecuteReader();
-                if (rd.Read()) { found = true; name = $"{rd["fname"]} {rd["lname"]}".Trim(); }
-            }
-
-            // Check tbl_icmr_registration_2026
-            if (!found)
-            {
-                var sql = @"SELECT fname, lname FROM tbl_icmr_registration_2026
-                            WHERE is_active=1 AND is_deleted=0
-                            AND (icmr_reg_id=@rid OR its_regid=@rid OR icmr_id=@rid)
-                            AND (LOWER(email)=@em OR LOWER(alt_email)=@em) LIMIT 1";
-                using var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@rid", regId);
-                cmd.Parameters.AddWithValue("@em", email);
-                using var rd = cmd.ExecuteReader();
-                if (rd.Read()) { found = true; name = $"{rd["fname"]} {rd["lname"]}".Trim(); }
+                // DB connection failed - only demo works
             }
 
             if (found)
@@ -190,10 +208,43 @@ namespace IFNRCONFaceSearch.Controllers
             return View();
         }
 
-        // ── SEARCH ────────────────────────────────────────────────────────────
         [HttpPost]
         public async Task<IActionResult> Search(IFormFile face, string day)
         {
+            if (!IsLoggedIn())
+                return Json(new { error = "Unauthorized. Please login first." });
+
+            if (face == null || face.Length == 0)
+                return Json(new { error = "Please upload a face photo." });
+
+            if (string.IsNullOrEmpty(day))
+                return Json(new { error = "Please select an event day." });
+
+            // ── Demo mode ────────────────────────────────────────────────────
+            if (HttpContext.Session.GetString("face_search_name") == "Demo User")
+            {
+                await Task.Delay(2000); // simulate search
+                var demoResults = new[]
+                {
+            new { url = "https://picsum.photos/seed/face1/400/300",
+                  filename = "event-photo-1.jpg", confidence = 95.5m, s3_key = "demo/1" },
+            new { url = "https://picsum.photos/seed/face2/400/300",
+                  filename = "event-photo-2.jpg", confidence = 89.2m, s3_key = "demo/2" },
+            new { url = "https://picsum.photos/seed/face3/400/300",
+                  filename = "event-photo-3.jpg", confidence = 82.7m, s3_key = "demo/3" },
+            new { url = "https://picsum.photos/seed/face4/400/300",
+                  filename = "event-photo-4.jpg", confidence = 76.1m, s3_key = "demo/4" }
+        };
+                return Json(new
+                {
+                    success = true,
+                    matched = demoResults,
+                    match_count = demoResults.Length,
+                    day
+                });
+            }
+
+           
             if (!IsLoggedIn())
                 return Json(new { error = "Unauthorized. Please login first." });
 
